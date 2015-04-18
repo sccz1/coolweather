@@ -40,6 +40,11 @@ public class ChooseAreaActivity extends Activity {
 	private ArrayAdapter<String> adapter;
 	private CoolWeatherDB coolWeatherDB;
 	private List<String> dataList = new ArrayList<String>();
+	
+	/**
+	 * 是否从WeatherActivity中跳转过来。
+	 */
+	private boolean isFromWeatherActivity;
 	/**
 	 * 省列表
 	 */
@@ -68,13 +73,16 @@ public class ChooseAreaActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		SharedPreferences prefs = PreferenceManager. getDefaultSharedPreferences(this);
-		if (prefs.getBoolean("city_selected", false)) {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
+		if (prefs.getBoolean("city_selected", false) && !isFromWeatherActivity ) {
+			System.out.println("dsjfosdjfoisdjfoi");
 			Intent intent = new Intent(this, WeatherActivity.class);
 			startActivity(intent);
 			finish();
 			return;
 		}
+		System.out.println("yes");
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.choose_area);
 		listView = (ListView) findViewById(R.id.list_view);
@@ -250,6 +258,10 @@ public class ChooseAreaActivity extends Activity {
 		} else if (currentLevel == LEVEL_CITY) {
 			queryProvinces();
 		} else {
+			if (isFromWeatherActivity) {
+				Intent intent = new Intent(this, WeatherActivity.class);
+				startActivity(intent);
+			}
 			finish();
 		}
 	}
